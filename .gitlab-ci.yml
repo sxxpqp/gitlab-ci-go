@@ -46,6 +46,8 @@ compile:
     - echo $IMAGE_TAG
     - mkdir -p /kaniko/.docker
     - KANIKO_BUILD_CONTEXT=`pwd`
+    - echo $KANIKO_BUILD_CONTEXT
+    - ls
     # Write credentials to access Gitlab Container Registry within the runner/ci
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
