@@ -24,6 +24,7 @@ compile:
     KANIKO_ARGS: ""
     KANIKO_BUILD_CONTEXT: $CI_PROJECT_DIR
     CI_REGISTRY: docker.io
+    CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_USER: sxxpqp
     CI_REGISTRY_PASSWORD: Xl123456..
   stage: build
