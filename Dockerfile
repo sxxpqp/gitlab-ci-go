@@ -9,7 +9,6 @@ WORKDIR /app
 
 COPY . /app/
 RUN go mod download && \
-    cd src && \
     go build -o ${APPNAME}
 
 ## Deploy
@@ -20,7 +19,7 @@ ENV APP=${APPNAME}
 
 WORKDIR /app
 
-COPY --from=build /app/src/ /app/
+COPY --from=build /app/ /app/
 
 EXPOSE 8888
 
