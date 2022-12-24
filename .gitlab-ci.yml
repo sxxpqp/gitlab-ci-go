@@ -23,7 +23,7 @@ format:
 
 compile:
   variables:
-    CI_REGISTRY: https://index.docker.io
+    CI_REGISTRY: docker.io
     CI_REGISTRY_USER: sxxpqp
     CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_PASSWORD: Xl123456..
