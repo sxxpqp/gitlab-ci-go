@@ -8,17 +8,23 @@ stages:
 format:
   stage: test
   script:
+    - export GO111MODULE=on 
+    - export GOPROXY=https://goproxy.cn,direct
     - go mod init hello
     - go mod tidy
-    - go build -o main ./
+    - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
+  artifacts:
+    paths:
+      - main  
+services:
+  - docker:dind
 
 compile:
   stage: build
+  image: docker:latest
   script:
-    - ls 
-  artifacts:
-    paths:
-      - main
+    - docker build -t example-image:latest .
+  
 
 deploy:
   stage: deploy
