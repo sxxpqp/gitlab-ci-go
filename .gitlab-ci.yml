@@ -32,7 +32,7 @@ compile:
   image:
     # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
     # Only debug/*-debug versions of the Kaniko image are known to work within Gitlab CI
-    name: sxxpqp/kaniko-executor:latest
+    name: gcr.io/kaniko-project/executor:latest
     entrypoint: [""]
   script:
     # if the user provide IMAGE_TAG then use it, else build the image tag using the default logic.
