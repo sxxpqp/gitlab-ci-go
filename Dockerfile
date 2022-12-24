@@ -1,29 +1,29 @@
-FROM golang:1.18-alpine AS build
+# FROM golang:1.18-alpine AS build
 
-ARG APPNAME
-ARG GOPROXY
-ENV GO111MODULE=on \
-    GOPROXY=https://proxy.golang.com.cn,direct
+# ARG APPNAME
+# ARG GOPROXY
+# ENV GO111MODULE=on \
+#     GOPROXY=https://proxy.golang.com.cn,direct
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY . /app/
-RUN go mod download && \
-    go build -o gitlab-ci-go
+# COPY . /app/
+# RUN go mod download && \
+#     go build -o gitlab-ci-go
 
 ## Deploy
 FROM golang:1.18-alpine
 
-ARG APPNAME
-ENV APP=gitlab-ci-go
+# ARG APPNAME
+# ENV APP=gitlab-ci-go
 
 WORKDIR /app
-
-COPY --from=build /app/ /app/
+COPY . /app/
+# COPY --from=build /app/ /app/
 
 EXPOSE 80
 
-ENTRYPOINT "/app/${APP}" "-f" "/app/etc/greet-api.yaml"
-
+# ENTRYPOINT "/app/${APP}" "-f" "/app/etc/greet-api.yaml"
+ENTRYPOINT ["./main"]
 
 
