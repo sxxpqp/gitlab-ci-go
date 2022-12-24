@@ -1,16 +1,27 @@
+FROM golang:1.18-alpine AS build
 
-# 运行阶段指定scratch作为基础镜像
-FROM scratch
+ARG APPNAME
+ARG GOPROXY
+ENV GO111MODULE=on \
+    GOPROXY=${GOPROXY}
 
 WORKDIR /app
 
-# 将上一个阶段publish文件夹下的所有文件复制进来
-COPY . /app
+COPY . /app/
+RUN go mod download && \
+    cd src && \
+    go build -o ${APPNAME}
 
-# # 为了防止代码中请求https链接报错，我们需要将证书纳入到scratch中
-# COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert
+## Deploy
+FROM golang:1.18-alpine
 
+ARG APPNAME
+ENV APP=${APPNAME}
 
-EXPOSE 80
+WORKDIR /app
 
-ENTRYPOINT ["./main"]
+COPY --from=build /app/src/ /app/
+
+EXPOSE 8888
+
+ENTRYPOINT "/app/${APP}" "-f" "/app/etc/greet-api.yaml"

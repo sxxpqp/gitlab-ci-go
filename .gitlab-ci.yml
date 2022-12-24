@@ -23,14 +23,16 @@ format:
 
 compile:
   variables:
-    # Additional options for Kaniko executor.
-    # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
-    KANIKO_ARGS: ""
-    CI_REGISTRY: docker.io
-    CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
+    KANIKO_CACHE_ARGS: "--cache=true --cache-copy-layers=true --cache-ttl=24h"
+    IMAGE_LABELS: >
+      --label commit.sha=$CI_COMMIT_SHORT_SHA
+    IMAGE_BUILD_ARGS: >
+      -build-arg APPNAME=go-zero-greet
+      --build-arg GOPROXY=https://proxy.golang.com.cn,direct
+    CI_REGISTRY: https://index.docker.io
     CI_REGISTRY_USER: sxxpqp
+    CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_PASSWORD: Xl123456..
-    VERSION: latest
   stage: build
   image:
     # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
@@ -45,26 +47,13 @@ compile:
     #   * Default Branch: main -> latest
     #   * Branch: feature/my-feature -> branch-feature-my-feature
     #   * Tag: v1.0.0/beta2 -> v1.0.0-beta2
-    - export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION
-    - echo $IMAGE_TAG
     - mkdir -p /kaniko/.docker
-    - KANIKO_BUILD_CONTEXT=`pwd`
-    - echo $KANIKO_BUILD_CONTEXT
-    - ls
-    # Write credentials to access Gitlab Container Registry within the runner/ci
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    # Build and push the container. To disable push add --no-push
-    - cat /kaniko/.docker/config.json
-    - DOCKERFILE_PATH=${DOCKERFILE_PATH:-"$KANIKO_BUILD_CONTEXT/Dockerfile"}
-    - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $IMAGE_TAG
-  # Run this job in a branch/tag where a Dockerfile exists
-  rules:
-    - exists:
-        - Dockerfile
-    # # custom Dockerfile path
-    # - if: $DOCKERFILE_PATH
-    # # custom build context without an explicit Dockerfile path
-    # - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context dir:///${CI_PROJECT_DIR}
+      --dockerfile ${CI_PROJECT_DIR}/Dockerfile 
+      --destination "$CI_REGISTRY_IMAGE:$CI_PIPELINE_IID" $KANIKO_CACHE_ARGS $IMAGE_LABELS $IMAGE_BUILD_ARGS
 
   
 
