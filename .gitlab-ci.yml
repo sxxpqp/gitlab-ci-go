@@ -10,7 +10,7 @@ format:
   script:
     - go mod init hello
     - go mod tidy
-    - go build -o main ./...
+    - go build -o main ./
 
 compile:
   stage: build
@@ -18,7 +18,7 @@ compile:
     - ls 
   artifacts:
     paths:
-      - mybinaries
+      - main
 
 deploy:
   stage: deploy
