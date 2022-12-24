@@ -1,4 +1,4 @@
-image: golang:latest
+
 cache:
   paths:
     - main
@@ -6,8 +6,21 @@ stages:
   - test
   - build
   - deploy
+image: docker:20.10.16
 
+variables:
+  # When you use the dind service, you must instruct Docker to talk with
+  # the daemon started inside of the service. The daemon is available
+
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:20.10.16-dind
+
+before_script:
+  - docker info
 format:
+  image: golang:latest
   stage: test
   script:
     - export GO111MODULE=on 
@@ -21,29 +34,29 @@ format:
   #   paths:
   #     - main
 
-compile:
-  variables:
-    CI_REGISTRY: docker.io
-    CI_REGISTRY_USER: sxxpqp
-    CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
-    CI_REGISTRY_PASSWORD: Xl123456..
-  stage: build
-  image:
-    # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
-    # Only debug/*-debug versions of the Kaniko image are known to work within Gitlab CI
-    name: sxxpqp/executor:debug
-    entrypoint: [""]
-  script:
-    - echo ${CI_PROJECT_DIR}
-    - echo ${CI_REGISTRY_IMAGE}
-    # - echo ${CI_COMMIT_TAG}
-    - echo ${CI_COMMIT_SHORT_SHA}
-    # - mkdir /kaniko/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"},\"$CI_DEPENDENCY_PROXY_SERVER\":{\"auth\":\"$(printf "%s:%s" ${CI_DEPENDENCY_PROXY_USER} "${CI_DEPENDENCY_PROXY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
+# compile:
+#   variables:
+#     CI_REGISTRY: docker.io
+#     CI_REGISTRY_USER: sxxpqp
+#     CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
+#     CI_REGISTRY_PASSWORD: Xl123456..
+#   stage: build
+#   image:
+#     # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
+#     # Only debug/*-debug versions of the Kaniko image are known to work within Gitlab CI
+#     name: sxxpqp/executor:debug
+#     entrypoint: [""]
+#   script:
+#     - echo ${CI_PROJECT_DIR}
+#     - echo ${CI_REGISTRY_IMAGE}
+#     # - echo ${CI_COMMIT_TAG}
+#     - echo ${CI_COMMIT_SHORT_SHA}
+#     # - mkdir /kaniko/.docker
+#     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"},\"$CI_DEPENDENCY_PROXY_SERVER\":{\"auth\":\"$(printf "%s:%s" ${CI_DEPENDENCY_PROXY_USER} "${CI_DEPENDENCY_PROXY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+#     - /kaniko/executor
+#       --context "${CI_PROJECT_DIR}"
+#       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+#       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
 
   
 
