@@ -27,6 +27,7 @@ compile:
     CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_USER: sxxpqp
     CI_REGISTRY_PASSWORD: Xl123456..
+    VERSION: latest
   stage: build
   image:
     # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
@@ -41,21 +42,7 @@ compile:
     #   * Default Branch: main -> latest
     #   * Branch: feature/my-feature -> branch-feature-my-feature
     #   * Tag: v1.0.0/beta2 -> v1.0.0-beta2
-    - |
-      if [ -z ${IMAGE_TAG+x} ]; then
-        if [ "$CI_COMMIT_REF_NAME" = $CI_DEFAULT_BRANCH ]; then
-            VERSION="latest"
-          elif [ -n "$CI_COMMIT_TAG" ];then
-            NOSLASH=$(echo "$CI_COMMIT_TAG" | tr -s / - )
-            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
-            VERSION="$SANITIZED"
-          else \
-            NOSLASH=$(echo "$CI_COMMIT_REF_NAME" | tr -s / - )
-            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
-            VERSION="branch-$SANITIZED"
-          fi
-        export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION
-      fi
+    - export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION
     - echo $IMAGE_TAG
     - mkdir -p /kaniko/.docker
     # Write credentials to access Gitlab Container Registry within the runner/ci
