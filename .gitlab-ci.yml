@@ -23,7 +23,6 @@ compile:
     # Additional options for Kaniko executor.
     # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
     KANIKO_ARGS: ""
-    KANIKO_BUILD_CONTEXT: .
     CI_REGISTRY: docker.io
     CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_USER: sxxpqp
@@ -46,6 +45,7 @@ compile:
     - export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION
     - echo $IMAGE_TAG
     - mkdir -p /kaniko/.docker
+    - KANIKO_BUILD_CONTEXT=`pwd`
     # Write credentials to access Gitlab Container Registry within the runner/ci
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
