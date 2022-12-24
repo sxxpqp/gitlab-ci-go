@@ -52,7 +52,7 @@ compile:
     - echo $KANIKO_BUILD_CONTEXT
     - ls
     # Write credentials to access Gitlab Container Registry within the runner/ci
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
     - cat /kaniko/.docker/config.json
     - DOCKERFILE_PATH=$KANIKO_BUILD_CONTEXT/Dockerfile
@@ -61,10 +61,10 @@ compile:
   rules:
     - exists:
         - Dockerfile
-    # custom Dockerfile path
-    - if: $DOCKERFILE_PATH
-    # custom build context without an explicit Dockerfile path
-    - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR
+    # # custom Dockerfile path
+    # - if: $DOCKERFILE_PATH
+    # # custom build context without an explicit Dockerfile path
+    # - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR
 
   
 
