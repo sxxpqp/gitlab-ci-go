@@ -50,7 +50,7 @@ compile:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     # Build and push the container. To disable push add --no-push
     - cat /kaniko/.docker/config.json
-    - DOCKERFILE_PATH=Dockerfile
+    - DOCKERFILE_PATH=$KANIKO_BUILD_CONTEXT/Dockerfile
     - /kaniko/executor --context $KANIKO_BUILD_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $IMAGE_TAG
   # Run this job in a branch/tag where a Dockerfile exists
   rules:
