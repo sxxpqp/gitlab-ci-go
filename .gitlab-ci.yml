@@ -23,7 +23,7 @@ compile:
     # Additional options for Kaniko executor.
     # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
     KANIKO_ARGS: ""
-    KANIKO_BUILD_CONTEXT: $CI_PROJECT_DIR
+    KANIKO_BUILD_CONTEXT: .
     CI_REGISTRY: docker.io
     CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
     CI_REGISTRY_USER: sxxpqp
