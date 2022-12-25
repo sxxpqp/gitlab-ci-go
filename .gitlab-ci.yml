@@ -19,10 +19,10 @@
 #     - docker build -t my-docker-image .
 #     - docker run my-docker-image /script/to/run/tests
 variables:
-  CI_REGISTRY: docker.io
-  CI_REGISTRY_USER: sxxpqp
+  CI_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  CI_REGISTRY_USER: 1019466494@qq.com
   CI_REGISTRY_PASSWORD: Xl123456..
-  CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
+  CI_REGISTRY_IMAGE: registry.cn-hangzhou.aliyuncs.com/sxxpqp/gitlab-ci-go
 
 stages:
   - build
