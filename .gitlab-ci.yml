@@ -10,6 +10,8 @@ stages:
 
 build:
   stage: build
+  only:
+  - master 
   image:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
@@ -25,6 +27,8 @@ deploy_review:
   image: bitnami/kubectl:latest
   stage: deploy
   script:
+    - ls ${CI_REGISTRY_IMAGE}
+    - ls ${CI_COMMIT_SHORT_SHA} 
     - export ${CI_REGISTRY_IMAGE}
     - export ${CI_COMMIT_SHORT_SHA}
     - kubectl version   
