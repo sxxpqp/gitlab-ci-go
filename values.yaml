@@ -1,0 +1,14 @@
+gitlabUrl: https://gitlab.sxxpqp.top/
+
+runnerRegistrationToken: "GR1348941ADYt-xaaztkCtKAxc4wT"
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        image = "ubuntu:20.04"
+        privileged = true
+      [[runners.kubernetes.volumes.empty_dir]]
+        name = "docker-certs"
+        mount_path = "/certs/client"
+        medium = "Memory"
+  
