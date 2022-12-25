@@ -25,4 +25,5 @@ deploy_review:
   image: cnych/kubectl
   stage: deploy
   script:
-    - kubectl version    
+    - kubectl version   
+    - kubectl get node 
