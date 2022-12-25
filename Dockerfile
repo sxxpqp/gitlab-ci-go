@@ -8,8 +8,7 @@ ENV GO111MODULE=on \
 WORKDIR /app
 
 COPY . /app/
-RUN go mod init test && go mod tidy\
-    go build -o main .
+RUN  go build -o main .
 
 ## Deploy
 FROM registry.cn-hangzhou.aliyuncs.com/sxxpqp/golang:latest
