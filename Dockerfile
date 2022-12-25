@@ -12,7 +12,7 @@
 #     go build -o gitlab-ci-go
 
 ## Deploy
-FROM golang:latest
+FROM registry.cn-hangzhou.aliyuncs.com/sxxpqp/golang:latest
 
 # ARG APPNAME
 # ENV APP=gitlab-ci-go
