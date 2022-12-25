@@ -18,12 +18,14 @@ build:
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA"
+      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
   rules:
     - if: $CI_COMMIT_SHORT_SHA
 deploy_review:
   image: bitnami/kubectl:latest
   stage: deploy
   script:
+    - export ${CI_REGISTRY_IMAGE}
+    - export ${CI_COMMIT_SHORT_SHA}
     - kubectl version   
     - kubectl apply -f deploy.yaml 
