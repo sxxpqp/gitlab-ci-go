@@ -12,7 +12,7 @@
 #     go build -o gitlab-ci-go
 
 ## Deploy
-FROM golang:1.18-alpine
+FROM golang:latest
 
 # ARG APPNAME
 # ENV APP=gitlab-ci-go
