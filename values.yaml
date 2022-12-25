@@ -1,6 +1,9 @@
 gitlabUrl: https://gitlab.sxxpqp.top/
 
 runnerRegistrationToken: "GR1348941ADYt-xaaztkCtKAxc4wT"
+rbac:
+  create: true
+  clusterWideAccess: false
 runners:
   config: |
     [[runners]]
