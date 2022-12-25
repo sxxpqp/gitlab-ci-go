@@ -38,4 +38,4 @@ build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}"
   rules:
-    - if: $CI_COMMIT_SHA
+    - if: $CI_COMMIT_SHORT_SHA
