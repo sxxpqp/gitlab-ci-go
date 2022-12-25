@@ -21,3 +21,8 @@ build:
       --destination "${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA"
   rules:
     - if: $CI_COMMIT_SHORT_SHA
+deploy_review:
+  image: cnych/kubectl
+  stage: deploy
+  script:
+    - kubectl version    
