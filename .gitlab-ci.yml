@@ -26,4 +26,4 @@ deploy_review:
   stage: deploy
   script:
     - kubectl version   
-    - kubectl get pod -n gitlab-system 
+    - kubectl apply -f deploy.yaml 

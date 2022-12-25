@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab-ci-go
+  namespace: gitlab-system
+spec:
+  selector:
+    matchLabels:
+      app: gitlab-ci-go
+  template:
+    metadata:
+      labels:
+        app: gitlab-ci-go
+    spec:
+      containers:
+      - name: gitlab-ci-go
+        image: ${CI_REGISTRY_IMAGE}:$CI_COMMIT_SHORT_SHA
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
