@@ -1,68 +1,38 @@
+image: docker:20.10.16
 
-cache:
-  paths:
-    - main
-stages:
-  - test
-  - build
-  - deploy
-# image: docker:20.10.16
+variables:
+  # When using dind service, you must instruct Docker to talk with
+  # the daemon started inside of the service. The daemon is available
+  # with a network connection instead of the default
+  # /var/run/docker.sock socket.
+  DOCKER_HOST: tcp://docker:2376
+  #
+  # The 'docker' hostname is the alias of the service container as described at
+  # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+  # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+  # the variable must be set to tcp://localhost:2376 because of how the
+  # Kubernetes executor connects services to the job container
+  # DOCKER_HOST: tcp://localhost:2376
+  #
+  # Specify to Docker where to create the certificates. Docker
+  # creates them automatically on boot, and creates
+  # `/certs/client` to share between the service and job
+  # container, thanks to volume mount from config.toml
+  DOCKER_TLS_CERTDIR: "/certs"
+  # These are usually specified by the entrypoint, however the
+  # Kubernetes executor doesn't run entrypoints
+  # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
-# variables:
-#   # When you use the dind service, you must instruct Docker to talk with
-#   # the daemon started inside of the service. The daemon is available
-#   DOCKER_HOST: tcp://docker:2376
-#   DOCKER_TLS_CERTDIR: "/certs"
+services:
+  - docker:20.10.16-dind
 
+before_script:
+  - docker info
 
-# services:
-#   - docker:20.10.16-dind
-
-# before_script:
-#   - docker info
-format:
-  image: golang:latest
-  stage: test
-  script:
-    - export GO111MODULE=on 
-    - export GOPROXY=https://goproxy.cn,direct
-    - go mod init hello
-    - go mod tidy
-    - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main .
-    - ls
-    # - ehco $CI_PROJECT_DIR
-  # artifacts:
-  #   paths:
-  #     - main
-
-compile:
-  variables:
-    CI_REGISTRY: docker.io
-    CI_REGISTRY_USER: sxxpqp
-    CI_REGISTRY_IMAGE: sxxpqp/gitlab-ci-go
-    CI_REGISTRY_PASSWORD: Xl123456..
+build:
   stage: build
-  image:
-    # For latest releases see https://github.com/GoogleContainerTools/kaniko/releases
-    # Only debug/*-debug versions of the Kaniko image are known to work within Gitlab CI
-    name: sxxpqp/executor:debug
-    entrypoint: [""]
   script:
-    - echo ${CI_PROJECT_DIR}
-    - echo ${CI_REGISTRY_IMAGE}
-    # - echo ${CI_COMMIT_TAG}
-    - echo ${CI_COMMIT_SHORT_SHA}
-    # - mkdir /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
-
-  
-
-deploy:
-  stage: deploy
-  image: golang:latest
-  script: echo "Define your deployment script!"
-  environment: production
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
