@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rancher
+spec:
+  selector:
+    matchLabels:
+      app: rancher
+  template:
+    metadata:
+      labels:
+        app: rancher
+    spec:
+      containers:
+      - name: rancher
+        image: rancher/rancher
+        resources:
+          limits:
+            memory: "2128Mi"
+            cpu: "2500m"
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rancher
+spec:
+  selector:
+    app: myapp
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  - port: 443
+    targetPort: 443
+    name: https
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rancher
+  labels:
+    name: rancher
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rancher.sxxpqp.top
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: rancher
+            port: 
+              number: 80
+    
