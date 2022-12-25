@@ -42,6 +42,7 @@ metadata:
   labels:
     name: gitlab-ci-go
 spec:
+  ingressClassName: nginx
   rules:
   - host: test.sxxpqp.top
     http:
